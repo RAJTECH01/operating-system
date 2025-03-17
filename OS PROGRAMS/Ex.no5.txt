@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+int main() {
+ int fd[2];
+ pid_t pid;
+ if (pipe(fd) == -1) {
+ perror("pipe");
+ exit(1);
+ }
+ pid = fork();
+ if (pid < 0) {
+ perror("fork");
+ exit(1);
+ }
+ if (pid > 0) {
+ // Parent process
+ int number;
+ close(fd[0]); // Close read end of the pipe
+ number = rand() % 100; // Generate a random number
+ printf("Parent process generated number: %d\n", number);
+ write(fd[1], &number, sizeof(number)); // Write number to the pipe
+ close(fd[1]); // Close write end of the pipe
+ }
+ else {
+ // Child process
+ int number, result;
+ close(fd[1]); // Close write end of the pipe
+ read(fd[0], &number, sizeof(number)); // Read number from the pipe
+ printf("Child process received number: %d\n", number);
+ result = number * 2; // Multiply the number by 2
+ write(fd[1], &result, sizeof(result)); // Write the result to the pipe
+ close(fd[0]); // Close read end of the pipe
+ }
+ return 0;
+}

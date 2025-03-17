@@ -1,0 +1,94 @@
+#include <stdio.h>
+#define MAX_QUEUE_SIZE 100
+// Process structure
+typedef struct {
+ int pid;
+ int burst_time;
+ int priority;
+} Process;
+// Queue structure
+typedef struct {
+ int front;
+ int rear;
+ Process arr[MAX_QUEUE_SIZE];
+} Queue;
+// Initialize queue
+void init_queue(Queue *q) {
+ q->front = -1;
+ q->rear = -1;
+}
+// Check if queue is empty
+int is_empty(Queue *q) {
+ return q->front == -1;
+}
+// Check if queue is full
+int is_full(Queue *q) {
+ return q->rear == MAX_QUEUE_SIZE - 1;
+}
+// Add process to queue
+void enqueue(Queue *q, Process p) {
+ if (is_full(q)) {
+ printf("Queue is full\n");
+ return;
+ }
+ if (is_empty(q)) {
+ q->front = q->rear = 0;
+ } else {
+ q->rear++;
+ }
+ q->arr[q->rear] = p;
+}
+// Remove process from queue
+Process dequeue(Queue *q) {
+ if (is_empty(q)) {
+ printf("Queue is empty\n");
+ Process p = { -1, -1, -1 };
+ return p;
+ }
+ Process p = q->arr[q->front];
+ if (q->front == q->rear) {
+ q->front = q->rear = -1;
+ } else {
+ q->front++;
+ }
+ return p;
+}
+// Main function
+int main() {
+ // Initialize queues
+ Queue q1, q2, q3;
+ init_queue(&q1);
+ init_queue(&q2);
+ init_queue(&q3);
+ // Create processes
+ Process p1 = { 1, 6, 1 };
+ Process p2 = { 2, 4, 2 };
+ Process p3 = { 3, 8, 3 };
+ Process p4 = { 4, 3, 1 };
+ Process p5 = { 5, 5, 2 };
+ Process p6 = { 6, 2, 3 };
+ // Add processes to queues based on priority 
+ enqueue(&q1, p1);
+ enqueue(&q2, p2);
+ enqueue(&q3, p3);
+ enqueue(&q1, p4);
+ enqueue(&q2, p5);
+ enqueue(&q3, p6);
+ // Run processes in each queue
+ printf("Queue 1:\n");
+ while (!is_empty(&q1)) {
+ Process p = dequeue(&q1);
+ printf("Running process %d with burst time %d\n", p.pid, p.burst_time);
+ }
+ printf("Queue 2:\n");
+ while (!is_empty(&q2)) {
+ Process p = dequeue(&q2);
+ printf("Running process %d with burst time %d\n", p.pid, p.burst_time);
+ }
+ printf("Queue 3:\n");
+ while (!is_empty(&q3)) {
+ Process p = dequeue(&q3);
+ printf("Running process %d with burst time %d\n", p.pid, p.burst_time);
+ }
+ return 0;
+} 
