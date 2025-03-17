@@ -1,3 +1,7 @@
+use C++ to get output
+
+
+
 #include <iostream>
 using namespace std;
 
@@ -114,7 +118,3 @@ int main() {
     cal();
     return 0;
 }
-
-
-
-use C++ to get output
